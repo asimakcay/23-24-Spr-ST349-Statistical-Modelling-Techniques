@@ -5,15 +5,14 @@ editor: visual
 ---
 
 ```{r}
-# Gerekli kütüphaneleri yükle
+# Installing the required libraries
 library(ggplot2)
 library(dplyr)
 library(car)
 
 ```
-
+# Women's National Volleyball Team Data Set
 ```{r}
-# Kadın Milli Voleybol Takımı Veri Seti
 kadin_oyuncular <- data.frame(
   Isim = c("Ece Karayilan", "Aylin Sarioglu", "Melis Gurkaynak", "Sena Gulbahar", "Zehra Gunes", "Hande Baladin"),
   Pozisyon = c("Pasor", "Smacor", "Orta Oyuncu", "Libero", "Orta Oyuncu", "Smacor"),
@@ -23,20 +22,17 @@ kadin_oyuncular <- data.frame(
 )
 
 ```
-
+# Function to display the first few rows of the data set
 ```{r}
-# Veri setinin ilk birkaç satırını görüntüle
 head(kadin_oyuncular)
 ```
-
+# EDA for female actors
 ```{r}
-# Kadın oyuncular için EDA
-summary(kadin_oyuncular) # Veri setinin özeti
+summary(kadin_oyuncular)# Function to display summary of data set
 ```
-
+# EDA: Data Visualization with Graphs
+# Age Distribution
 ```{r}
-# EDA: Grafiklerle Veri Görselleştirme
-# Yaş Dağılımı
 ggplot(kadin_oyuncular, aes(x=Yas)) + geom_histogram(binwidth=1, fill="skyblue", color="black") + 
   ggtitle("Age Distribution of Players") + xlab("Yaş") + ylab("Frekans")
 ```
@@ -48,7 +44,7 @@ ggplot(kadin_oyuncular, aes(x=Pozisyon, y=Boy)) + geom_boxplot(fill="lightgreen"
 ```
 
 ```{r}
-# Yaşa Göre Maç Başına Ortalama Sayı Grafiği
+# Average Numbers Per Match
 plot(kadin_oyuncular$Yas, kadin_oyuncular$MacBasinaOrtalamaSayi, main="Average Points Per Match by Law", xlab="Yas", ylab="Average Numbers Per Match", pch=19)
 
 ```
@@ -60,19 +56,18 @@ summary(lm_model_kadin)
 ```
 
 ```{r}
-# ANOVA Analizi: Pozisyona Göre Maç Başına Ortalama Sayı Farklılıkları
+# ANOVA
 anova_model_kadin <- aov(MacBasinaOrtalamaSayi ~ Pozisyon, data=kadin_oyuncular)
 summary(anova_model_kadin) # ANOVA sonuçlarını gösterir
 ```
 
 ```{r}
-# ANCOVA Analizi: Boyun Pozisyona ve Maç Başına Ortalama Sayı Üzerindeki Etkisi
+# ANCOVA 
 ancova_model_kadin <- aov(MacBasinaOrtalamaSayi ~ Pozisyon + Boy, data=kadin_oyuncular)
 summary(ancova_model_kadin) # ANCOVA sonuçlarını gösterir
 ```
 
 ```{r}
-# Pozisyona Göre Maç Başına Ortalama Sayı - Kutu Grafiği
 ggplot(kadin_oyuncular, aes(x=Pozisyon, y=MacBasinaOrtalamaSayi, fill=Pozisyon)) + 
   geom_boxplot() + 
   ggtitle("Average Points Per Game by Position") + 
@@ -82,11 +77,8 @@ ggplot(kadin_oyuncular, aes(x=Pozisyon, y=MacBasinaOrtalamaSayi, fill=Pozisyon))
 ```
 
 ```{r}
-# ANCOVA Sonuçlarını Görselleştirmek
-# Modelden Tahmin Edilen Değerler
+# ANCOVA 
 kadin_oyuncular$TahminEdilenSayi <- predict(ancova_model_kadin)
-
-# Pozisyona ve Boya Göre Maç Başına Ortalama Sayı - Scatter Plot
 ggplot(kadin_oyuncular, aes(x=Boy, y=MacBasinaOrtalamaSayi, color=Pozisyon)) + 
   geom_point() + 
   geom_line(aes(y=TahminEdilenSayi), linetype="dashed") + 
@@ -97,7 +89,7 @@ ggplot(kadin_oyuncular, aes(x=Boy, y=MacBasinaOrtalamaSayi, color=Pozisyon)) +
 ```
 
 ```{r}
-# Erkek Milli Voleybol Takımı Veri Seti
+# Men's National Volleyball Team Data Set
 erkek_oyuncular <- data.frame(
   Isim = c("Burak Gungor", "Ahmet Tumer", "Kerem Elice", "Deniz Kuzey", "Murat Yenipazar", "Serhat Coskun"),
   Pozisyon = c("Pasor", "Smacor", "Orta Oyuncu", "Libero", "Orta Oyuncu", "Smacor"),
@@ -108,46 +100,47 @@ erkek_oyuncular <- data.frame(
 ```
 
 ```{r}
-# Veri setinin ilk birkaç satırını görüntüle
+# Display the first few rows of the data set
 head(erkek_oyuncular)
 ```
 
 ```{r}
-# Erkek oyuncular için EDA
-summary(erkek_oyuncular) # Veri setinin özeti
+# EDA for male actors
+summary(erkek_oyuncular)
 ```
 
 ```{r}
-# Average Points Per Match by Age Grafiği
+# Average Points Per Match by Age
 plot(erkek_oyuncular$Yas, erkek_oyuncular$MacBasinaOrtalamaSayi, main="Average Points Per Match by Age", xlab="Age", ylab="Average Points Per Match", pch=19)
 
 ```
 
 ```{r}
-# EDA: Grafiklerle Veri Görselleştirme
+# EDA: Data Visualization with Graphs
 
-# Yaş Dağılımı
+# Age Distribution
+
 ggplot(erkek_oyuncular, aes(x=Yas)) + geom_histogram(binwidth=1, fill="skyblue", color="black") +
   ggtitle("Age Distribution of Players") + xlab("Age") + ylab("Frequency")
 ```
 
 ```{r}
-# Regresyon Analizi: Yaş ve Maç Başına Ortalama Sayı Arasındaki İlişki
+# Regression Analysis: Relationship Between Age and Average Points Per Match
 lm_model_erkek <- lm(MacBasinaOrtalamaSayi ~ Yas, data=erkek_oyuncular)
 summary(lm_model_erkek)
 ```
 
 ```{r}
-# ANOVA Analizi: Pozisyona Göre Maç Başına Ortalama Sayı Farklılıkları
+# ANOVA Analysis: Differences in Average Points Per Match by Position
 anova_model_erkek <- aov(MacBasinaOrtalamaSayi ~ Pozisyon, data=erkek_oyuncular)
 summary(anova_model_erkek)
 
 ```
 
-### **ANOVA Görselleştirme**
+#ANOVA  Visualization
 
 ```{r}
-# Pozisyona Göre Maç Başına Ortalama Sayı - Kutu Grafiği
+# Average Points Per Game by Position - Box Plot
 ggplot(erkek_oyuncular, aes(x=Pozisyon, y=MacBasinaOrtalamaSayi, fill=Pozisyon)) +
   geom_boxplot() +
   ggtitle("Average Points Per Game by Position") +
@@ -157,21 +150,18 @@ ggplot(erkek_oyuncular, aes(x=Pozisyon, y=MacBasinaOrtalamaSayi, fill=Pozisyon))
 ```
 
 ```{r}
-#ANCOVA Analizi
-# ANCOVA Analizi: Boyun Pozisyona ve Maç Başına Ortalama Sayı Üzerindeki Etkisi
+#ANCOVA Analysis
+# ANCOVA Analysis: Neck Position and Its Effect on Average Points Per Match
 ancova_model_erkek <- aov(MacBasinaOrtalamaSayi ~ Pozisyon + Boy, data=erkek_oyuncular)
 summary(ancova_model_erkek)
 
 ```
 
-### **ANCOVA Görselleştirme**
-
+###ANCOVA visualization
 ```{r}
-# ANCOVA Sonuçlarını Görselleştirmek
-# Modelden Tahmin Edilen Değerler
 erkek_oyuncular$TahminEdilenSayi <- predict(ancova_model_erkek)
 
-# Pozisyona ve Boya Göre Maç Başına Ortalama Sayı - Scatter Plot
+# Average Points Per Match by Position and Size - Scatter Plot
 ggplot(erkek_oyuncular, aes(x=Boy, y=MacBasinaOrtalamaSayi, color=Pozisyon)) +
   geom_point() +
   geom_line(aes(y=TahminEdilenSayi), linetype="dashed") +
@@ -182,19 +172,19 @@ ggplot(erkek_oyuncular, aes(x=Boy, y=MacBasinaOrtalamaSayi, color=Pozisyon)) +
 
 ```
 
-### **Veri Setlerini Birleştirme ve Cinsiyet Faktörünü Ekleme**
+### Combining Datasets and Adding the Gender Factor
 
 ```{r}
-# Kadın ve erkek oyuncular için veri setlerini birleştir
+# Merge data sets for male and female players
 kadin_oyuncular$Cinsiyet <- 'Kadın'
 erkek_oyuncular$Cinsiyet <- 'Erkek'
 
-# Cinsiyet faktörünü ekleyerek birleştir
+# Merge by adding the gender variable
 oyuncular <- rbind(kadin_oyuncular, erkek_oyuncular)
 oyuncular$Cinsiyet <- as.factor(oyuncular$Cinsiyet)
 
-# İlk birkaç satırı kontrol et
 head(oyuncular)
+
 
 ```
 
@@ -204,15 +194,14 @@ summary(lm_model)
 
 ```
 
-#### **2. ANOVA Analizi: Cinsiyet ve Pozisyonun Maç Başına Ortalama Sayı Üzerindeki Etkileri**
-
+#### 2.ANOVA Analysis: Effects of Gender and Position on Average Points Per Match
 ```{r}
 anova_model <- aov(MacBasinaOrtalamaSayi ~ Cinsiyet + Pozisyon, data=oyuncular)
 summary(anova_model)
 
 ```
 
-#### **3. ANCOVA Analizi: Boyun Kontrol Edildiği Durumda Cinsiyet ve Pozisyonun Etkisi**
+#### 3. ANCOVA Analysis: Effect of Gender and Position When Height is Controlled
 
 ```{r}
 ancova_model <- aov(MacBasinaOrtalamaSayi ~ Cinsiyet + Pozisyon + Boy, data=oyuncular)
@@ -220,7 +209,7 @@ summary(ancova_model)
 
 ```
 
-### **1. Cinsiyete Göre Maç Başına Ortalama Sayı: Kutu Grafiği**
+### 1.	Average Points Per Match by Gender: Box Plot
 
 ```{r}
 ggplot(oyuncular, aes(x=Cinsiyet, y=MacBasinaOrtalamaSayi, fill=Cinsiyet)) +
@@ -233,7 +222,7 @@ ggplot(oyuncular, aes(x=Cinsiyet, y=MacBasinaOrtalamaSayi, fill=Cinsiyet)) +
 
 ```
 
-### **2. Pozisyon ve Cinsiyetin Etkileşimi: Kutu Grafiği**
+### 2. Interaction of Position and Gender: Box Plot
 
 ```{r}
 ggplot(oyuncular, aes(x=Pozisyon, y=MacBasinaOrtalamaSayi, fill=Cinsiyet)) +
@@ -247,7 +236,7 @@ ggplot(oyuncular, aes(x=Pozisyon, y=MacBasinaOrtalamaSayi, fill=Cinsiyet)) +
 
 ```
 
-### **3. Boy ve Maç Başına Ortalama Sayı İlişkisi: Scatter Plot**
+### 3. Relationship Between Height and Average Points Per Match: Scatter Plot
 
 ```{r}
 ggplot(oyuncular, aes(x=Boy, y=MacBasinaOrtalamaSayi, color=Cinsiyet)) +
